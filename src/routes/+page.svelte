@@ -627,6 +627,76 @@
 								onChordRemove={handleChordRemoveAll}
 								onAddMoreClick={() => (currentView = 'settings')}
 							/>
+
+							<!-- Selected Chords Section -->
+							{#if selectedChords.length > 0}
+								<div class="selected-chords-section">
+									<h3 class="selected-chords-title">Selected Chords ({selectedChords.length})</h3>
+
+									<div class="chord-selector__selected-chords">
+										{#each selectedChords as chord, index (chord.instanceId)}
+											<div
+												class="selected-chord-wrapper"
+												class:dragging={draggedChordIndex === index}
+												class:drag-over={dragOverIndex === index}
+												class:drop-after={dragOverIndex === index && dropPosition === 'after'}
+												ondragover={(e) => handleDragOver(e, index)}
+												ondragleave={(e) => handleDragLeave(e)}
+												ondrop={(e) => handleDrop(e, index)}
+											>
+												<!-- Delete button with trash can icon -->
+												<button
+													onclick={() => handleChordRemove(chord)}
+													class="delete-chord-btn"
+													aria-label="Remove {chord.name}"
+												>
+													<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+														<path
+															d="M2 4h12M5.333 4V2.667a1.333 1.333 0 011.334-1.334h2.666a1.333 1.333 0 011.334 1.334V4m2 0v9.333a1.333 1.333 0 01-1.334 1.334H4.667a1.333 1.333 0 01-1.334-1.334V4h9.334z"
+															stroke="currentColor"
+															stroke-width="1.5"
+															stroke-linecap="round"
+															stroke-linejoin="round"
+														/>
+													</svg>
+												</button>
+
+												<!-- Chord name pill (draggable area) -->
+												<div
+													class="selected-chord-pill"
+													draggable="true"
+													ondragstart={(e) => handleDragStart(e, index)}
+													ondragend={handleDragEnd}
+													role="button"
+													tabindex="0"
+												>
+													<span class="chord-name">{chord.name}</span>
+
+													<!-- Drag handle icon -->
+													<div class="drag-handle" aria-label="Drag to reorder">
+														<svg width="12" height="16" viewBox="0 0 12 16" fill="none">
+															<circle cx="3" cy="4" r="1.5" fill="currentColor" />
+															<circle cx="9" cy="4" r="1.5" fill="currentColor" />
+															<circle cx="3" cy="8" r="1.5" fill="currentColor" />
+															<circle cx="9" cy="8" r="1.5" fill="currentColor" />
+															<circle cx="3" cy="12" r="1.5" fill="currentColor" />
+															<circle cx="9" cy="12" r="1.5" fill="currentColor" />
+														</svg>
+													</div>
+												</div>
+											</div>
+										{/each}
+									</div>
+
+									{#if selectedChords.length > 1}
+										<p class="drag-hint">💡 Drag chords to reorder • Random mode will be disabled</p>
+									{/if}
+								</div>
+							{:else}
+								<div class="selected-chords-prompt">
+									<p>Select chords above to get started...</p>
+								</div>
+							{/if}
 						</div>
 					{/if}
 				{/if}
@@ -637,10 +707,21 @@
 		{#if showPracticeSettings}
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
-			<div class="drawer-overlay" class:open={isDrawerOpen} onclick={toggleDrawer}></div>
-			<!-- svelte-ignore a11y_click_events_have_key_events -->
-			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div class="settings-drawer" class:open={isDrawerOpen} onclick={(e) => e.stopPropagation()}>
+				<!-- Settings Tab Button (attached to drawer) -->
+				<button class="settings-tab" onclick={toggleDrawer} aria-label="Toggle practice settings">
+					<svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+						<path
+							d="M3.333 5h13.334M3.333 10h13.334M3.333 15h13.334"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						/>
+					</svg>
+					<span>Settings</span>
+				</button>
+
 				<div class="drawer-handle" onclick={toggleDrawer}>
 					<div class="drawer-handle-bar"></div>
 				</div>
@@ -749,96 +830,8 @@
 		{/if}
 
 		{#if showStartButton}
-			<!-- Settings Tab Button (above footer) -->
-			<button class="settings-tab" onclick={toggleDrawer} aria-label="Toggle practice settings">
-				<svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-					<path
-						d="M3.333 5h13.334M3.333 10h13.334M3.333 15h13.334"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					/>
-				</svg>
-				<span>Settings</span>
-			</button>
-
 			<footer class="app-footer fade-in" bind:this={footerElement}>
 				<div class="app-footer__content">
-					<div class="app-footer__header">
-						<h3 class="footer-title">Selected Chords ({selectedChords.length})</h3>
-						{#if selectedChords.length > 0}
-							<button class="clear-all-btn" onclick={clearAllChords}>
-								Clear All
-							</button>
-						{/if}
-					</div>
-
-					<div class="app-footer__selected-chords">
-						<div class="chord-selector__selected-chords">
-							{#each selectedChords as chord, index (chord.instanceId)}
-								<div
-									class="selected-chord-wrapper"
-									class:dragging={draggedChordIndex === index}
-									class:drag-over={dragOverIndex === index}
-									class:drop-after={dragOverIndex === index && dropPosition === 'after'}
-									ondragover={(e) => handleDragOver(e, index)}
-									ondragleave={(e) => handleDragLeave(e)}
-									ondrop={(e) => handleDrop(e, index)}
-								>
-									<!-- Delete button with trash can icon -->
-									<button
-										onclick={() => handleChordRemove(chord)}
-										class="delete-chord-btn"
-										aria-label="Remove {chord.name}"
-									>
-										<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-											<path
-												d="M2 4h12M5.333 4V2.667a1.333 1.333 0 011.334-1.334h2.666a1.333 1.333 0 011.334 1.334V4m2 0v9.333a1.333 1.333 0 01-1.334 1.334H4.667a1.333 1.333 0 01-1.334-1.334V4h9.334z"
-												stroke="currentColor"
-												stroke-width="1.5"
-												stroke-linecap="round"
-												stroke-linejoin="round"
-											/>
-										</svg>
-									</button>
-
-									<!-- Chord name pill (draggable area) -->
-									<div
-										class="selected-chord-pill"
-										draggable="true"
-										ondragstart={(e) => handleDragStart(e, index)}
-										ondragend={handleDragEnd}
-										role="button"
-										tabindex="0"
-									>
-										<span class="chord-name">{chord.name}</span>
-
-										<!-- Drag handle icon -->
-										<div class="drag-handle" aria-label="Drag to reorder">
-											<svg width="12" height="16" viewBox="0 0 12 16" fill="none">
-												<circle cx="3" cy="4" r="1.5" fill="currentColor" />
-												<circle cx="9" cy="4" r="1.5" fill="currentColor" />
-												<circle cx="3" cy="8" r="1.5" fill="currentColor" />
-												<circle cx="9" cy="8" r="1.5" fill="currentColor" />
-												<circle cx="3" cy="12" r="1.5" fill="currentColor" />
-												<circle cx="9" cy="12" r="1.5" fill="currentColor" />
-											</svg>
-										</div>
-									</div>
-								</div>
-							{/each}
-							{#if selectedChords.length === 0}
-								<div class="chord-selector__prompt">Select chords above to get started...</div>
-							{:else if selectedChords.length === 1}
-								<div class="chord-selector__prompt">Add one more chord to start practicing...</div>
-							{/if}
-						</div>
-						{#if selectedChords.length > 1}
-							<p class="drag-hint">💡 Drag chords to reorder • Random mode will be disabled</p>
-						{/if}
-					</div>
-
 					<button
 						onclick={handleStartClick}
 						disabled={selectedChords.length < 2 || startCountdown !== null}
@@ -1016,74 +1009,59 @@
 	}
 
 
-	/* Settings Tab Button */
-	.settings-tab {
-		position: fixed;
-		bottom: 100%;
-		left: 50%;
-		transform: translateX(-50%);
-		display: flex;
-		align-items: center;
-		gap: var(--spacing-sm);
-		padding: var(--spacing-sm) var(--spacing-lg);
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
-		border-bottom: none;
-		border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-		color: var(--color-text-secondary);
-		font-size: var(--font-size-sm);
-		font-weight: 600;
-		cursor: pointer;
-		transition: all var(--transition-fast);
-		z-index: 101;
-		box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-		margin-bottom: -1px;
-	}
-
-	.settings-tab:hover {
-		background: var(--color-surface-elevated);
-		color: var(--color-primary);
-		transform: translateX(-50%) translateY(-2px);
-	}
-
-	/* Settings Drawer */
-	.drawer-overlay {
-		position: fixed;
-		inset: 0;
-		background: rgba(0, 0, 0, 0.5);
-		opacity: 0;
-		pointer-events: none;
-		transition: opacity var(--transition-base);
-		z-index: 999;
-	}
-
-	.drawer-overlay.open {
-		opacity: 1;
-		pointer-events: auto;
-	}
-
+	/* Settings Drawer - positioned behind footer with tab popping out */
 	.settings-drawer {
+		--tab-height: 36px; /* Height of the tab that pops out */
 		position: fixed;
 		left: 0;
 		right: 0;
+		bottom: var(--footer-height, 0px);
 		background: var(--color-surface);
 		border-top: 1px solid var(--color-border);
 		border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 		max-height: 70vh;
 		overflow-y: auto;
+		/* Position drawer so it's hidden, but tab pops out above footer */
+		transform: translateY(calc(100% - var(--tab-height)));
 		transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		z-index: 1000;
+		z-index: 98; /* Below footer (z:100) */
 		box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
 	}
 
-	/* Calculate drawer position based on footer */
-	.settings-drawer {
-		bottom: var(--footer-height, 0);
-		transform: translateY(100%);
+	.settings-drawer.open {
+		/* Slide up to show full content */
+		transform: translateY(0);
 	}
 
-	.settings-drawer.open {
-		transform: translateY(0);
+	/* Settings Tab Button - centered hamburger that pops out above footer */
+	.settings-tab {
+		position: absolute;
+		top: calc(var(--tab-height) * -1); /* Position tab ABOVE the drawer */
+		left: 50%;
+		transform: translateX(-50%);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: var(--tab-height);
+		padding: 0 var(--spacing-lg);
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-bottom: none;
+		border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+		color: var(--color-text-secondary);
+		cursor: pointer;
+		transition: all var(--transition-fast);
+		box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+		z-index: 1;
+	}
+
+	.settings-tab span {
+		display: none;
+	}
+
+	.settings-tab:hover {
+		background: var(--color-surface-elevated);
+		color: var(--color-primary);
 	}
 
 	.drawer-handle {
@@ -1286,23 +1264,10 @@
 	.app-footer__content {
 		max-width: 1200px;
 		margin: 0 auto;
-		padding: var(--spacing-xl);
+		padding: var(--spacing-xl) var(--spacing-lg);
 		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-lg);
-	}
-
-	.app-footer__header {
-		display: flex;
-		justify-content: space-between;
+		justify-content: center;
 		align-items: center;
-		gap: var(--spacing-md);
-	}
-
-	.footer-title {
-		font-size: var(--font-size-lg);
-		font-weight: 600;
-		color: var(--color-text-primary);
 	}
 
 	.clear-all-btn {
@@ -1321,10 +1286,6 @@
 		background: var(--color-danger);
 		border-color: var(--color-danger);
 		color: white;
-	}
-
-	.app-footer__selected-chords {
-		min-height: 60px;
 	}
 
 	.chord-selector__selected-chords {
@@ -1399,7 +1360,7 @@
 		padding: var(--spacing-sm) var(--spacing-md);
 		background: var(--color-primary);
 		border: none;
-		border-radius: var(--radius-full);
+		border-radius: var(--radius-sm);
 		color: var(--color-primary-contrast);
 		font-size: var(--font-size-base);
 		font-weight: 600;
@@ -1446,6 +1407,36 @@
 		color: var(--color-text-secondary);
 		font-size: var(--font-size-sm);
 		font-style: italic;
+	}
+
+	/* Selected Chords Section in Main Area */
+	.selected-chords-section {
+		margin-top: var(--spacing-xl);
+		padding: var(--spacing-lg);
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		animation: fadeIn var(--transition-base);
+	}
+
+	.selected-chords-title {
+		font-size: var(--font-size-lg);
+		font-weight: 600;
+		color: var(--color-text-primary);
+		margin-bottom: var(--spacing-md);
+		text-align: center;
+	}
+
+	.selected-chords-prompt {
+		margin-top: var(--spacing-xl);
+		padding: var(--spacing-xl);
+		text-align: center;
+		color: var(--color-text-secondary);
+		font-size: var(--font-size-base);
+		font-style: italic;
+		background: var(--color-surface);
+		border: 1px dashed var(--color-border);
+		border-radius: var(--radius-lg);
 	}
 
 	.drag-hint {
@@ -1736,6 +1727,17 @@
 	@media (max-width: 768px) {
 		.app-nav__content {
 			padding: var(--spacing-md);
+			justify-content: center;
+		}
+
+		.app-nav__logo {
+			flex: 1;
+			justify-content: center;
+		}
+
+		.settings-btn {
+			position: absolute;
+			right: var(--spacing-md);
 		}
 
 		.app-nav__title {
@@ -1745,6 +1747,9 @@
 		.app-main__content {
 			padding: var(--spacing-md);
 			padding-bottom: var(--spacing-sm);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
 		}
 
 		.practice-options {
@@ -1765,11 +1770,33 @@
 		.drawer-title {
 			font-size: var(--font-size-lg);
 			margin-bottom: var(--spacing-md);
+			text-align: center;
 		}
 
 		.drawer-settings-grid {
 			grid-template-columns: 1fr;
 			gap: var(--spacing-md);
+		}
+
+		.setting-group {
+			align-items: center;
+			text-align: center;
+		}
+
+		.setting-label {
+			text-align: center;
+		}
+
+		.tempo-control {
+			justify-content: center;
+		}
+
+		.beats-selector {
+			justify-content: center;
+		}
+
+		.practice-options {
+			align-items: center;
 		}
 
 		.settings-drawer {
@@ -1788,16 +1815,31 @@
 
 		/* Compact footer for mobile */
 		.app-footer__content {
+			padding: var(--spacing-lg) var(--spacing-md);
+		}
+
+		.selected-chords-section {
+			margin-top: var(--spacing-md);
 			padding: var(--spacing-md);
-			gap: var(--spacing-sm);
+			width: 100%;
+			max-width: 100%;
 		}
 
-		.app-footer__selected-chords {
-			min-height: auto;
+		.selected-chords-title {
+			font-size: var(--font-size-base);
 		}
 
-		.footer-title {
-			font-size: var(--font-size-sm);
+		.chord-selector__selected-chords {
+			justify-content: center;
+		}
+
+		.selected-chords-prompt {
+			margin-top: var(--spacing-md);
+			padding: var(--spacing-md);
+		}
+
+		.drag-hint {
+			text-align: center;
 		}
 
 		.settings-tab {

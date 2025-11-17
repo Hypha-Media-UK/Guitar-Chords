@@ -157,7 +157,7 @@
 
 	.grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
 		gap: var(--spacing-md);
 	}
 
@@ -223,6 +223,7 @@
 
 	.add-more-item {
 		grid-column: 1 / -1;
+		margin-top: var(--spacing-lg);
 	}
 
 	.add-more-btn {
@@ -378,11 +379,18 @@
 	@media (max-width: 768px) {
 		.chord-selector {
 			padding: var(--spacing-md);
+			width: 100%;
+			max-width: 100%;
 		}
 
 		.title {
 			font-size: var(--font-size-lg);
 			margin-bottom: var(--spacing-md);
+			text-align: center;
+		}
+
+		.grid {
+			justify-items: center;
 		}
 
 		.grid {

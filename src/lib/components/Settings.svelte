@@ -592,13 +592,69 @@
 	}
 
 	/* Mobile adjustments */
-	@media (max-width: 600px) {
+	@media (max-width: 768px) {
+		.settings-header {
+			justify-content: center;
+		}
+
+		.back-btn {
+			position: absolute;
+			left: var(--spacing-md);
+		}
+
 		.settings-header h1 {
 			font-size: var(--font-size-xl);
+			text-align: center;
 		}
 
 		.settings-content {
 			padding: var(--spacing-md);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.settings-section {
+			width: 100%;
+			max-width: 100%;
+			text-align: center;
+		}
+
+		.section-title {
+			text-align: center;
+		}
+
+		.section-description {
+			text-align: center;
+		}
+
+		.settings-info {
+			text-align: center;
+		}
+
+		.quick-actions {
+			justify-content: center;
+		}
+
+		.chord-groups {
+			width: 100%;
+		}
+
+		.group-title {
+			text-align: center;
+		}
+
+		.chord-grid {
+			justify-items: center;
+		}
+
+		.settings-footer {
+			justify-content: center;
+		}
+
+		.save-btn {
+			width: 100%;
+			max-width: 300px;
 		}
 	}
 
