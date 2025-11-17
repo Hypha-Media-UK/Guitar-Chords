@@ -673,7 +673,10 @@ function _page($$renderer, $$props) {
     let practiceChords = selectedChords;
     practiceChords[currentChordIndex];
     chords.filter((c) => visibleChordIds.includes(c.id));
+    function updateFooterHeight() {
+    }
     onDestroy(() => {
+      window.removeEventListener("resize", updateFooterHeight);
     });
     head("1uha8ag", $$renderer2, ($$renderer3) => {
       $$renderer3.title(($$renderer4) => {

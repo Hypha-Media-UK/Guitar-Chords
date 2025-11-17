@@ -42,6 +42,7 @@
 	let metronome: Metronome | null = null;
 	let beatInterval: number | null = null;
 	let countdownInterval: number | null = null;
+	let footerElement: HTMLElement | null = $state(null);
 
 	// Reactive values
 	let practiceChords = $derived(
@@ -128,6 +129,14 @@
 		setTimeout(() => {
 			showStartButton = true;
 		}, 900);
+
+		// Update footer height CSS variable for drawer positioning
+		setTimeout(() => {
+			updateFooterHeight();
+		}, 1000);
+
+		// Update on window resize
+		window.addEventListener('resize', updateFooterHeight);
 	});
 
 	function generateRandomSequence(chords: ChordInstance[]): ChordInstance[] {
@@ -375,6 +384,13 @@
 		isDrawerOpen = !isDrawerOpen;
 	}
 
+	function updateFooterHeight() {
+		if (footerElement) {
+			const height = footerElement.offsetHeight;
+			document.documentElement.style.setProperty('--footer-height', `${height}px`);
+		}
+	}
+
 	function handleCompletionClose() {
 		showCompletion = false;
 		currentChordIndex = 0;
@@ -523,6 +539,7 @@
 		if (metronome) metronome.destroy();
 		if (beatInterval) clearInterval(beatInterval);
 		if (countdownInterval) clearInterval(countdownInterval);
+		window.removeEventListener('resize', updateFooterHeight);
 	});
 </script>
 
@@ -732,21 +749,23 @@
 		{/if}
 
 		{#if showStartButton}
-			<footer class="app-footer fade-in">
+			<!-- Settings Tab Button (above footer) -->
+			<button class="settings-tab" onclick={toggleDrawer} aria-label="Toggle practice settings">
+				<svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+					<path
+						d="M3.333 5h13.334M3.333 10h13.334M3.333 15h13.334"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					/>
+				</svg>
+				<span>Settings</span>
+			</button>
+
+			<footer class="app-footer fade-in" bind:this={footerElement}>
 				<div class="app-footer__content">
 					<div class="app-footer__header">
-						<button class="settings-toggle-btn" onclick={toggleDrawer} aria-label="Toggle practice settings">
-							<svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-								<path
-									d="M3.333 5h13.334M3.333 10h13.334M3.333 15h13.334"
-									stroke="currentColor"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								/>
-							</svg>
-							<span>Settings</span>
-						</button>
 						<h3 class="footer-title">Selected Chords ({selectedChords.length})</h3>
 						{#if selectedChords.length > 0}
 							<button class="clear-all-btn" onclick={clearAllChords}>
@@ -997,6 +1016,36 @@
 	}
 
 
+	/* Settings Tab Button */
+	.settings-tab {
+		position: fixed;
+		bottom: 100%;
+		left: 50%;
+		transform: translateX(-50%);
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-sm);
+		padding: var(--spacing-sm) var(--spacing-lg);
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-bottom: none;
+		border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+		color: var(--color-text-secondary);
+		font-size: var(--font-size-sm);
+		font-weight: 600;
+		cursor: pointer;
+		transition: all var(--transition-fast);
+		z-index: 101;
+		box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+		margin-bottom: -1px;
+	}
+
+	.settings-tab:hover {
+		background: var(--color-surface-elevated);
+		color: var(--color-primary);
+		transform: translateX(-50%) translateY(-2px);
+	}
+
 	/* Settings Drawer */
 	.drawer-overlay {
 		position: fixed;
@@ -1015,7 +1064,6 @@
 
 	.settings-drawer {
 		position: fixed;
-		bottom: 0;
 		left: 0;
 		right: 0;
 		background: var(--color-surface);
@@ -1023,10 +1071,15 @@
 		border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 		max-height: 70vh;
 		overflow-y: auto;
-		transform: translateY(100%);
 		transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		z-index: 1000;
 		box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+	}
+
+	/* Calculate drawer position based on footer */
+	.settings-drawer {
+		bottom: var(--footer-height, 0);
+		transform: translateY(100%);
 	}
 
 	.settings-drawer.open {
@@ -1246,33 +1299,10 @@
 		gap: var(--spacing-md);
 	}
 
-	.settings-toggle-btn {
-		display: flex;
-		align-items: center;
-		gap: var(--spacing-sm);
-		padding: var(--spacing-sm) var(--spacing-md);
-		background: transparent;
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-md);
-		color: var(--color-text-secondary);
-		font-size: var(--font-size-sm);
-		font-weight: 600;
-		cursor: pointer;
-		transition: all var(--transition-fast);
-	}
-
-	.settings-toggle-btn:hover {
-		background: var(--color-surface-elevated);
-		border-color: var(--color-primary);
-		color: var(--color-primary);
-	}
-
 	.footer-title {
 		font-size: var(--font-size-lg);
 		font-weight: 600;
 		color: var(--color-text-primary);
-		flex: 1;
-		text-align: center;
 	}
 
 	.clear-all-btn {
@@ -1770,12 +1800,12 @@
 			font-size: var(--font-size-sm);
 		}
 
-		.settings-toggle-btn {
-			padding: var(--spacing-xs) var(--spacing-sm);
+		.settings-tab {
+			padding: var(--spacing-xs) var(--spacing-md);
 			font-size: var(--font-size-xs);
 		}
 
-		.settings-toggle-btn span {
+		.settings-tab span {
 			display: none;
 		}
 
