@@ -373,5 +373,68 @@
 	.delete-btn-confirm:hover {
 		background: #ff2d1f;
 	}
+
+	/* Mobile optimizations */
+	@media (max-width: 768px) {
+		.chord-selector {
+			padding: var(--spacing-md);
+		}
+
+		.title {
+			font-size: var(--font-size-lg);
+			margin-bottom: var(--spacing-md);
+		}
+
+		.grid {
+			grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+			gap: var(--spacing-sm);
+		}
+
+		.chord-btn {
+			padding: var(--spacing-sm) var(--spacing-md);
+			font-size: var(--font-size-sm);
+		}
+
+		.action-btn {
+			padding: var(--spacing-xs);
+		}
+
+		.action-btn svg {
+			width: 14px;
+			height: 14px;
+		}
+
+		.add-more-btn {
+			padding: var(--spacing-md);
+			font-size: var(--font-size-sm);
+		}
+
+		.modal {
+			max-width: 95%;
+			padding: var(--spacing-md);
+		}
+
+		.modal-header h3 {
+			font-size: var(--font-size-lg);
+		}
+
+		.confirm-modal {
+			max-width: 90%;
+			padding: var(--spacing-lg);
+		}
+
+		.confirm-modal h3 {
+			font-size: var(--font-size-lg);
+		}
+
+		.confirm-modal p {
+			font-size: var(--font-size-sm);
+		}
+
+		.confirm-actions button {
+			padding: var(--spacing-sm) var(--spacing-md);
+			font-size: var(--font-size-sm);
+		}
+	}
 </style>
 

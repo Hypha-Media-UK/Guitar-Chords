@@ -611,9 +611,14 @@
 	}
 
 	@media (max-width: 768px) {
+		.practice-header {
+			padding: var(--spacing-md);
+		}
+
 		.practice-view {
 			grid-template-columns: 1fr;
-			gap: var(--spacing-lg);
+			gap: var(--spacing-md);
+			padding: var(--spacing-md);
 		}
 
 		.chord-view.prev,
@@ -627,6 +632,42 @@
 
 		.chord-name-large {
 			font-size: var(--font-size-3xl);
+		}
+
+		.practice-controls {
+			padding: var(--spacing-md);
+			gap: var(--spacing-sm);
+		}
+
+		.control-btn {
+			padding: var(--spacing-md);
+		}
+
+		.control-btn svg {
+			width: 20px;
+			height: 20px;
+		}
+
+		.modal {
+			max-width: 95%;
+			padding: var(--spacing-md);
+		}
+
+		.modal h3 {
+			font-size: var(--font-size-lg);
+		}
+
+		.shortcut-item {
+			padding: var(--spacing-sm);
+		}
+
+		.shortcut-key {
+			padding: var(--spacing-xs) var(--spacing-sm);
+			font-size: var(--font-size-xs);
+		}
+
+		.shortcut-description {
+			font-size: var(--font-size-sm);
 		}
 	}
 </style>

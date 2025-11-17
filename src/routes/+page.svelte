@@ -1599,12 +1599,17 @@
 	}
 
 	@media (max-width: 768px) {
+		.app-nav__content {
+			padding: var(--spacing-md);
+		}
+
 		.app-nav__title {
 			font-size: var(--font-size-xl);
 		}
 
 		.app-main__content {
 			padding: var(--spacing-md);
+			padding-bottom: var(--spacing-sm);
 		}
 
 		.practice-options {
@@ -1617,12 +1622,83 @@
 			max-width: 100%;
 		}
 
+		.practice-settings {
+			padding: var(--spacing-md);
+			margin-top: var(--spacing-lg);
+		}
+
+		.practice-settings__title {
+			font-size: var(--font-size-lg);
+			margin-bottom: var(--spacing-md);
+		}
+
 		.practice-settings__grid {
 			grid-template-columns: 1fr;
+			gap: var(--spacing-md);
+		}
+
+		.tempo-btn {
+			width: 36px;
+			height: 36px;
+		}
+
+		.tempo-input {
+			padding: var(--spacing-sm);
+			font-size: var(--font-size-base);
+		}
+
+		/* Compact footer for mobile */
+		.app-footer__content {
+			padding: var(--spacing-md);
+			gap: var(--spacing-sm);
+		}
+
+		.app-footer__selected-chords {
+			min-height: auto;
+		}
+
+		.footer-title {
+			font-size: var(--font-size-base);
+		}
+
+		.clear-all-btn {
+			padding: var(--spacing-xs) var(--spacing-sm);
+			font-size: var(--font-size-xs);
+		}
+
+		.selected-chord-pill {
+			padding: var(--spacing-xs) var(--spacing-sm);
+			font-size: var(--font-size-sm);
+		}
+
+		.delete-chord-btn {
+			padding: var(--spacing-xs);
+		}
+
+		.delete-chord-btn svg {
+			width: 16px;
+			height: 16px;
+		}
+
+		.drag-handle svg {
+			width: 14px;
+			height: 14px;
+		}
+
+		.drag-hint {
+			font-size: 0.625rem;
+			padding: var(--spacing-xs);
+			margin-top: var(--spacing-sm);
+		}
+
+		.start-button {
+			padding: var(--spacing-md);
+			font-size: var(--font-size-base);
 		}
 
 		.welcome-modal {
 			padding: var(--spacing-lg);
+			max-width: 95%;
 		}
 
 		.welcome-header h2 {
@@ -1640,6 +1716,16 @@
 		.completion-stats {
 			flex-direction: column;
 			gap: var(--spacing-md);
+		}
+
+		/* Reduce button group spacing */
+		.button-group {
+			gap: var(--spacing-xs);
+		}
+
+		.option-btn {
+			padding: var(--spacing-sm) var(--spacing-md);
+			font-size: var(--font-size-sm);
 		}
 	}
 </style>
