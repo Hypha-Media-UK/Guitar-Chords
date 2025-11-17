@@ -72,8 +72,10 @@
 		if (savedVisibleIds && savedVisibleIds.length > 0) {
 			visibleChordIds = savedVisibleIds;
 		} else {
-			// Default to all chords if no saved preference
-			visibleChordIds = chords.map((c) => c.id);
+			// Default to A, D, E chords for first-time users (beginner-friendly)
+			visibleChordIds = [1, 4, 6]; // A, D, E
+			// Save the default visible chords
+			storage.setVisibleChordIds(visibleChordIds);
 		}
 
 		// Load selected chords
@@ -88,6 +90,20 @@
 					return null;
 				})
 				.filter((c): c is ChordInstance => c !== null);
+		} else {
+			// Default to A, D, E chords for first-time users (beginner-friendly)
+			const defaultChordIds = [1, 4, 6]; // A, D, E
+			selectedChords = defaultChordIds
+				.map((id) => {
+					const chord = chords.find((c) => c.id === id);
+					if (chord) {
+						return { ...chord, instanceId: nextInstanceId++ };
+					}
+					return null;
+				})
+				.filter((c): c is ChordInstance => c !== null);
+			// Save the default selection
+			saveSelectedChords();
 		}
 
 		// Check if first visit
