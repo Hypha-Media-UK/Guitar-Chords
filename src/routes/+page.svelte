@@ -1021,7 +1021,8 @@
 		border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 		max-height: 70vh;
 		overflow-y: auto;
-		/* Position drawer so it's hidden, but tab pops out above footer */
+		/* Position drawer so it's hidden, but tab (at -36px) pops out above footer */
+		/* Tab is at -36px, so we translate by (100% - 36px) to keep tab visible */
 		transform: translateY(calc(100% - var(--tab-height)));
 		transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		z-index: 98; /* Below footer (z:100) */
