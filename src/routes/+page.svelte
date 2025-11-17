@@ -37,6 +37,7 @@
 	let showChordSelector = $state(false);
 	let showPracticeSettings = $state(false);
 	let showStartButton = $state(false);
+	let isDrawerOpen = $state(false);
 
 	let metronome: Metronome | null = null;
 	let beatInterval: number | null = null;
@@ -370,6 +371,10 @@
 		}
 	}
 
+	function toggleDrawer() {
+		isDrawerOpen = !isDrawerOpen;
+	}
+
 	function handleCompletionClose() {
 		showCompletion = false;
 		currentChordIndex = 0;
@@ -607,12 +612,25 @@
 							/>
 						</div>
 					{/if}
+				{/if}
+			</div>
+		</main>
 
-					{#if showPracticeSettings}
-						<section class="practice-settings fade-in">
-					<h2 class="practice-settings__title">Practice Settings</h2>
+		<!-- Practice Settings Drawer -->
+		{#if showPracticeSettings}
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<div class="drawer-overlay" class:open={isDrawerOpen} onclick={toggleDrawer}></div>
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<div class="settings-drawer" class:open={isDrawerOpen} onclick={(e) => e.stopPropagation()}>
+				<div class="drawer-handle" onclick={toggleDrawer}>
+					<div class="drawer-handle-bar"></div>
+				</div>
+				<div class="drawer-content">
+					<h2 class="drawer-title">Practice Settings</h2>
 
-					<div class="practice-settings__grid">
+					<div class="drawer-settings-grid">
 						<!-- Tempo Control -->
 						<div class="setting-group">
 							<label class="setting-label" for="tempo-input">Tempo (BPM)</label>
@@ -709,16 +727,26 @@
 							</div>
 						{/if}
 					</div>
-				</section>
-				{/if}
-			{/if}
+				</div>
 			</div>
-		</main>
+		{/if}
 
 		{#if showStartButton}
 			<footer class="app-footer fade-in">
 				<div class="app-footer__content">
 					<div class="app-footer__header">
+						<button class="settings-toggle-btn" onclick={toggleDrawer} aria-label="Toggle practice settings">
+							<svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+								<path
+									d="M3.333 5h13.334M3.333 10h13.334M3.333 15h13.334"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								/>
+							</svg>
+							<span>Settings</span>
+						</button>
 						<h3 class="footer-title">Selected Chords ({selectedChords.length})</h3>
 						{#if selectedChords.length > 0}
 							<button class="clear-all-btn" onclick={clearAllChords}>
@@ -969,22 +997,74 @@
 	}
 
 
-	.practice-settings {
-		margin-top: var(--spacing-2xl);
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
-		padding: var(--spacing-xl);
+	/* Settings Drawer */
+	.drawer-overlay {
+		position: fixed;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.5);
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity var(--transition-base);
+		z-index: 999;
 	}
 
-	.practice-settings__title {
+	.drawer-overlay.open {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.settings-drawer {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background: var(--color-surface);
+		border-top: 1px solid var(--color-border);
+		border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+		max-height: 70vh;
+		overflow-y: auto;
+		transform: translateY(100%);
+		transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		z-index: 1000;
+		box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+	}
+
+	.settings-drawer.open {
+		transform: translateY(0);
+	}
+
+	.drawer-handle {
+		padding: var(--spacing-md);
+		display: flex;
+		justify-content: center;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.drawer-handle-bar {
+		width: 40px;
+		height: 4px;
+		background: var(--color-border);
+		border-radius: var(--radius-full);
+		transition: background var(--transition-fast);
+	}
+
+	.drawer-handle:hover .drawer-handle-bar {
+		background: var(--color-text-secondary);
+	}
+
+	.drawer-content {
+		padding: 0 var(--spacing-xl) var(--spacing-xl);
+	}
+
+	.drawer-title {
 		font-size: var(--font-size-xl);
 		font-weight: 600;
 		margin-bottom: var(--spacing-lg);
 		color: var(--color-text-primary);
 	}
 
-	.practice-settings__grid {
+	.drawer-settings-grid {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
 		gap: var(--spacing-xl);
@@ -1147,6 +1227,7 @@
 		border-top: 1px solid var(--color-border);
 		position: sticky;
 		bottom: 0;
+		z-index: 100;
 	}
 
 	.app-footer__content {
@@ -1162,12 +1243,36 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		gap: var(--spacing-md);
+	}
+
+	.settings-toggle-btn {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-sm);
+		padding: var(--spacing-sm) var(--spacing-md);
+		background: transparent;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		color: var(--color-text-secondary);
+		font-size: var(--font-size-sm);
+		font-weight: 600;
+		cursor: pointer;
+		transition: all var(--transition-fast);
+	}
+
+	.settings-toggle-btn:hover {
+		background: var(--color-surface-elevated);
+		border-color: var(--color-primary);
+		color: var(--color-primary);
 	}
 
 	.footer-title {
 		font-size: var(--font-size-lg);
 		font-weight: 600;
 		color: var(--color-text-primary);
+		flex: 1;
+		text-align: center;
 	}
 
 	.clear-all-btn {
@@ -1622,19 +1727,23 @@
 			max-width: 100%;
 		}
 
-		.practice-settings {
-			padding: var(--spacing-md);
-			margin-top: var(--spacing-lg);
+		/* Drawer mobile styles */
+		.drawer-content {
+			padding: 0 var(--spacing-md) var(--spacing-md);
 		}
 
-		.practice-settings__title {
+		.drawer-title {
 			font-size: var(--font-size-lg);
 			margin-bottom: var(--spacing-md);
 		}
 
-		.practice-settings__grid {
+		.drawer-settings-grid {
 			grid-template-columns: 1fr;
 			gap: var(--spacing-md);
+		}
+
+		.settings-drawer {
+			max-height: 80vh;
 		}
 
 		.tempo-btn {
@@ -1658,7 +1767,16 @@
 		}
 
 		.footer-title {
-			font-size: var(--font-size-base);
+			font-size: var(--font-size-sm);
+		}
+
+		.settings-toggle-btn {
+			padding: var(--spacing-xs) var(--spacing-sm);
+			font-size: var(--font-size-xs);
+		}
+
+		.settings-toggle-btn span {
+			display: none;
 		}
 
 		.clear-all-btn {
