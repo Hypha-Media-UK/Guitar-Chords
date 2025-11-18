@@ -706,23 +706,28 @@
 
 		<!-- Practice Session Drawer -->
 		{#if showPracticeSettings}
+			<!-- Session summary tab (floating above footer) -->
+			<button
+				class="settings-tab"
+				class:open={isDrawerOpen}
+				onclick={toggleDrawer}
+				aria-label="Toggle practice session settings"
+			>
+				<span class="settings-tab-label">Session</span>
+				<span class="settings-tab-summary">
+					{tempo} BPM · {beatsPerChord} beats · {practiceDuration} bars
+					{#if isMetronomeEnabled}
+						· metronome
+					{/if}
+					{#if isRandomized}
+						· random
+					{/if}
+				</span>
+			</button>
+
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div class="settings-drawer" class:open={isDrawerOpen} onclick={(e) => e.stopPropagation()}>
-				<!-- Session summary tab (attached to drawer) -->
-				<button class="settings-tab" onclick={toggleDrawer} aria-label="Toggle practice session settings">
-					<span class="settings-tab-label">Session</span>
-					<span class="settings-tab-summary">
-						{tempo} BPM  b7 {beatsPerChord} beats  b7 {practiceDuration} bars
-						{#if isMetronomeEnabled}
-							 b7 metronome
-						{/if}
-						{#if isRandomized}
-							 b7 random
-						{/if}
-					</span>
-				</button>
-
 				<div class="drawer-handle" onclick={toggleDrawer}>
 					<div class="drawer-handle-bar"></div>
 				</div>
@@ -1014,9 +1019,8 @@
 	}
 
 
-	/* Practice session drawer - positioned behind footer with summary tab popping out */
+	/* Practice session drawer - sheet that slides up above the footer */
 	.settings-drawer {
-		--tab-height: 36px; /* Height of the tab that pops out */
 		position: fixed;
 		left: 0;
 		right: 0;
@@ -1025,41 +1029,42 @@
 		border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 		max-height: 70vh;
 		overflow-y: auto;
-		/* Position drawer so it's hidden, but tab (at -36px) pops out above footer */
-		/* Tab is at -36px, so we translate by (100% - 36px) to keep tab visible */
-		transform: translateY(calc(100% - var(--tab-height)));
+		transform: translateY(100%);
 		transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		z-index: 98; /* Below footer (z:100) */
 		box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
 	}
 
 	.settings-drawer.open {
-		/* Slide up to show full content */
 		transform: translateY(0);
 	}
 
-	/* Session summary tab - centered above footer */
+	/* Session summary tab - floating above footer */
 	.settings-tab {
-		position: absolute;
-		top: calc(var(--tab-height) * -1); /* Position tab ABOVE the drawer */
+		position: fixed;
 		left: 50%;
+		bottom: calc(var(--footer-height, 0px) + env(safe-area-inset-bottom) + var(--spacing-sm));
 		transform: translateX(-50%);
-		display: flex;
+		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		gap: var(--spacing-xs);
-		height: var(--tab-height);
+		height: 36px;
 		padding: 0 var(--spacing-lg);
 		background: var(--color-surface-elevated);
 		border: 1px solid var(--color-border);
-		border-bottom: none;
-		border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+		border-radius: 999px;
 		color: var(--color-text-secondary);
 		cursor: pointer;
 		transition: all var(--transition-fast);
-		box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
-		z-index: 1;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+		z-index: 101;
 		font-size: var(--font-size-xs);
+	}
+
+	.settings-tab.open {
+		background: var(--color-surface);
+		color: var(--color-text-primary);
 	}
 
 	.settings-tab-label {
@@ -1303,15 +1308,17 @@
 		transition: all var(--transition-fast);
 		position: relative;
 		padding: 2px;
+		flex: 1 1 260px;
+		max-width: 100%;
 	}
 
 	.selected-chord-wrapper.dragging {
-		opacity: 0.5;
-		transform: scale(0.95);
+		opacity: 0.6;
+		transform: scale(0.97);
 	}
 
 	.selected-chord-wrapper.drag-over {
-		background: rgba(var(--color-primary-rgb), 0.1);
+		background: rgba(var(--color-primary-rgb), 0.08);
 		border-radius: var(--radius-full);
 	}
 
@@ -1357,21 +1364,22 @@
 		display: flex;
 		align-items: center;
 		gap: var(--spacing-sm);
-		padding: var(--spacing-sm) var(--spacing-md);
+		padding: var(--spacing-md) var(--spacing-xl);
 		background: var(--color-primary);
-		border: none;
-		border-radius: var(--radius-sm);
+		border: 1px solid var(--color-primary);
+		border-radius: var(--radius-lg);
 		color: var(--color-primary-contrast);
 		font-size: var(--font-size-base);
 		font-weight: 600;
 		cursor: grab;
 		transition: all var(--transition-fast);
 		user-select: none;
+		box-shadow: 0 4px 12px rgba(0, 122, 255, 0.35);
 	}
 
 	.selected-chord-pill:hover {
 		background: var(--color-primary-light);
-		transform: scale(1.05);
+		transform: translateY(-2px);
 	}
 
 	.selected-chord-pill:active {
@@ -1388,7 +1396,7 @@
 		align-items: center;
 		justify-content: center;
 		color: var(--color-primary-contrast);
-		opacity: 0.5;
+		opacity: 0.9;
 		transition: opacity var(--transition-fast);
 		padding: 0 var(--spacing-xs);
 		cursor: grab;
@@ -1406,7 +1414,7 @@
 
 	/* Selected Chords Section in Main Area */
 	.selected-chords-section {
-		margin-top: var(--spacing-xl);
+		margin-top: var(--spacing-2xl);
 		padding-top: var(--spacing-md);
 		border-top: 1px solid var(--color-border);
 		background: transparent;
@@ -1414,13 +1422,13 @@
 	}
 
 	.selected-chords-title {
-		font-size: var(--font-size-sm);
-		font-weight: 600;
+		font-size: var(--font-size-xl);
+		font-weight: 700;
 		color: var(--color-text-secondary);
 		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		margin-bottom: var(--spacing-sm);
-		text-align: left;
+		letter-spacing: 0.16em;
+		margin-bottom: var(--spacing-lg);
+		text-align: center;
 	}
 
 	.selected-chords-prompt {
@@ -1435,14 +1443,20 @@
 	}
 
 	.drag-hint {
-		color: var(--color-text-secondary);
+		color: var(--color-primary-contrast);
 		font-size: var(--font-size-xs);
 		text-align: center;
 		margin-top: var(--spacing-md);
-		padding: var(--spacing-sm);
-		background: rgba(var(--color-primary-rgb), 0.05);
-		border-radius: var(--radius-md);
+		padding: var(--spacing-xs) var(--spacing-md);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--spacing-xs);
+		background: rgba(var(--color-primary-rgb), 0.35);
+		border-radius: 999px;
 		line-height: 1.4;
+		margin-left: auto;
+		margin-right: auto;
 	}
 
 	.start-button {
@@ -1726,7 +1740,7 @@
 			padding: var(--spacing-xl);
 			display: flex;
 			flex-direction: column;
-			gap: var(--spacing-xl);
+			gap: var(--spacing-2xl);
 		}
 
 	@media (max-width: 768px) {

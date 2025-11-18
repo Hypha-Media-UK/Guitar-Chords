@@ -150,14 +150,17 @@
 
 	.title {
 		font-size: var(--font-size-xl);
-		font-weight: 600;
-		margin-bottom: var(--spacing-lg);
-		color: var(--color-text-primary);
+		font-weight: 700;
+		margin-bottom: var(--spacing-xl);
+		color: var(--color-text-secondary);
+		text-transform: uppercase;
+		letter-spacing: 0.16em;
+		text-align: center;
 	}
 
 	.grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
 		gap: var(--spacing-md);
 	}
 
@@ -170,16 +173,20 @@
 
 	.chord-btn {
 		flex: 1;
-		padding: var(--spacing-md) var(--spacing-lg);
-		background: rgba(255, 255, 255, 0.03);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 72px;
+		padding: var(--spacing-md);
+		background: transparent;
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-lg);
 		color: var(--color-text-primary);
-		font-size: var(--font-size-base);
-		font-weight: 500;
+		font-size: var(--font-size-xl);
+		font-weight: 600;
 		cursor: pointer;
 		transition: all var(--transition-fast);
-		text-align: left;
+		text-align: center;
 	}
 
 	.chord-btn:hover {
@@ -188,9 +195,10 @@
 	}
 
 	.chord-btn.selected {
-		background: rgba(var(--color-primary-rgb), 0.14);
+		background: var(--color-primary);
 		border-color: var(--color-primary);
-		color: var(--color-primary);
+		color: var(--color-primary-contrast);
+		box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
 	}
 
 	.chord-actions {
@@ -229,24 +237,24 @@
 
 	.add-more-btn {
 		width: 100%;
-		padding: var(--spacing-lg);
-		background: transparent;
-		border: 2px dashed var(--color-border);
-		border-radius: var(--radius-md);
+		padding: var(--spacing-md) var(--spacing-lg);
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
 		color: var(--color-text-secondary);
-		font-size: var(--font-size-base);
+		font-size: var(--font-size-sm);
 		font-weight: 500;
 		cursor: pointer;
 		transition: all var(--transition-fast);
 		display: flex;
 		align-items: center;
-		justify-content: center;
+		justify-content: flex-start;
 		gap: var(--spacing-sm);
 	}
 
 	.add-more-btn:hover {
-		background: var(--color-surface-elevated);
-		border-color: var(--color-primary);
+		background: rgba(255, 255, 255, 0.08);
+		border-color: rgba(255, 255, 255, 0.18);
 		color: var(--color-primary);
 	}
 
@@ -385,8 +393,8 @@
 		}
 
 		.title {
-			font-size: var(--font-size-lg);
-			margin-bottom: var(--spacing-md);
+			font-size: var(--font-size-xl);
+			margin-bottom: var(--spacing-lg);
 			text-align: center;
 		}
 
@@ -400,8 +408,9 @@
 		}
 
 		.chord-btn {
+			min-height: 64px;
 			padding: var(--spacing-sm) var(--spacing-md);
-			font-size: var(--font-size-sm);
+			font-size: var(--font-size-lg);
 		}
 
 		.action-btn {
