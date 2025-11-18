@@ -18,8 +18,8 @@
 	let isMetronomeEnabled = $state(false);
 	let metronomeVolume = $state(0.8);
 	let isRandomized = $state(false);
-	let beatsPerChord = $state(PRACTICE_CONFIG.DEFAULT_BEATS_PER_CHORD);
-	let practiceDuration = $state(PRACTICE_CONFIG.DEFAULT_DURATION); // Number of bars
+	let beatsPerChord = $state<number>(PRACTICE_CONFIG.DEFAULT_BEATS_PER_CHORD);
+	let practiceDuration = $state<number>(PRACTICE_CONFIG.DEFAULT_DURATION); // Number of bars
 	let nextInstanceId = $state(1);
 	let startCountdown = $state<number | null>(null);
 	let isActive = $state(false);
@@ -643,6 +643,7 @@
 												ondragover={(e) => handleDragOver(e, index)}
 												ondragleave={(e) => handleDragLeave(e)}
 												ondrop={(e) => handleDrop(e, index)}
+								role="listitem"
 											>
 												<!-- Delete button with trash can icon -->
 												<button
@@ -703,23 +704,23 @@
 			</div>
 		</main>
 
-		<!-- Practice Settings Drawer -->
+		<!-- Practice Session Drawer -->
 		{#if showPracticeSettings}
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div class="settings-drawer" class:open={isDrawerOpen} onclick={(e) => e.stopPropagation()}>
-				<!-- Settings Tab Button (attached to drawer) -->
-				<button class="settings-tab" onclick={toggleDrawer} aria-label="Toggle practice settings">
-					<svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-						<path
-							d="M3.333 5h13.334M3.333 10h13.334M3.333 15h13.334"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						/>
-					</svg>
-					<span>Settings</span>
+				<!-- Session summary tab (attached to drawer) -->
+				<button class="settings-tab" onclick={toggleDrawer} aria-label="Toggle practice session settings">
+					<span class="settings-tab-label">Session</span>
+					<span class="settings-tab-summary">
+						{tempo} BPM  b7 {beatsPerChord} beats  b7 {practiceDuration} bars
+						{#if isMetronomeEnabled}
+							 b7 metronome
+						{/if}
+						{#if isRandomized}
+							 b7 random
+						{/if}
+					</span>
 				</button>
 
 				<div class="drawer-handle" onclick={toggleDrawer}>
@@ -797,13 +798,13 @@
 						<Toggle
 							isOn={isMetronomeEnabled}
 							onToggle={toggleMetronome}
-							label="Sound?"
+							label="Metronome"
 						/>
 
 						<Toggle
 							isOn={isRandomized}
 							onToggle={toggleRandomized}
-							label="Random?"
+							label="Random order"
 						/>
 
 						<!-- Volume Control -->
@@ -992,9 +993,10 @@
 	}
 
 	.app-nav__title {
-		font-size: var(--font-size-2xl);
+		font-size: var(--font-size-xl);
 		font-weight: 700;
 		color: var(--color-text-primary);
+		letter-spacing: 0.02em;
 	}
 
 	.app-main {
@@ -1006,18 +1008,20 @@
 		max-width: 1200px;
 		margin: 0 auto;
 		padding: var(--spacing-xl);
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-xl);
 	}
 
 
-	/* Settings Drawer - positioned behind footer with tab popping out */
+	/* Practice session drawer - positioned behind footer with summary tab popping out */
 	.settings-drawer {
 		--tab-height: 36px; /* Height of the tab that pops out */
 		position: fixed;
 		left: 0;
 		right: 0;
 		bottom: var(--footer-height, 0px);
-		background: var(--color-surface);
-		border-top: 1px solid var(--color-border);
+		background: var(--color-surface-elevated);
 		border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 		max-height: 70vh;
 		overflow-y: auto;
@@ -1026,7 +1030,7 @@
 		transform: translateY(calc(100% - var(--tab-height)));
 		transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		z-index: 98; /* Below footer (z:100) */
-		box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+		box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
 	}
 
 	.settings-drawer.open {
@@ -1034,7 +1038,7 @@
 		transform: translateY(0);
 	}
 
-	/* Settings Tab Button - centered hamburger that pops out above footer */
+	/* Session summary tab - centered above footer */
 	.settings-tab {
 		position: absolute;
 		top: calc(var(--tab-height) * -1); /* Position tab ABOVE the drawer */
@@ -1043,26 +1047,37 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		gap: var(--spacing-xs);
 		height: var(--tab-height);
 		padding: 0 var(--spacing-lg);
-		background: var(--color-surface);
+		background: var(--color-surface-elevated);
 		border: 1px solid var(--color-border);
 		border-bottom: none;
 		border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 		color: var(--color-text-secondary);
 		cursor: pointer;
 		transition: all var(--transition-fast);
-		box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
 		z-index: 1;
+		font-size: var(--font-size-xs);
 	}
 
-	.settings-tab span {
-		display: none;
+	.settings-tab-label {
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+	}
+
+	.settings-tab-summary {
+		color: var(--color-text-secondary);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.settings-tab:hover {
-		background: var(--color-surface-elevated);
-		color: var(--color-primary);
+		background: var(--color-surface);
+		color: var(--color-text-primary);
 	}
 
 	.drawer-handle {
@@ -1087,20 +1102,21 @@
 
 	.drawer-content {
 		padding: 0 var(--spacing-xl) var(--spacing-xl);
+		padding-bottom: calc(var(--spacing-xl) + env(safe-area-inset-bottom));
 	}
 
 	.drawer-title {
-		font-size: var(--font-size-xl);
+		font-size: var(--font-size-lg);
 		font-weight: 600;
-		margin-bottom: var(--spacing-lg);
+		margin-bottom: var(--spacing-md);
 		color: var(--color-text-primary);
 	}
 
 	.drawer-settings-grid {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
-		gap: var(--spacing-xl);
-		margin-bottom: var(--spacing-lg);
+		gap: var(--spacing-lg);
+		margin-bottom: var(--spacing-md);
 	}
 
 	.setting-group {
@@ -1234,9 +1250,8 @@
 	.practice-options {
 		display: flex;
 		align-items: center;
-		gap: var(--spacing-xl);
-		padding-top: var(--spacing-lg);
-		border-top: 1px solid var(--color-border);
+		gap: var(--spacing-lg);
+		padding-top: var(--spacing-md);
 	}
 
 	.volume-control {
@@ -1266,28 +1281,12 @@
 		max-width: 1200px;
 		margin: 0 auto;
 		padding: var(--spacing-xl) var(--spacing-lg);
+		padding-bottom: calc(var(--spacing-xl) + env(safe-area-inset-bottom));
 		display: flex;
 		justify-content: center;
 		align-items: center;
 	}
 
-	.clear-all-btn {
-		padding: var(--spacing-sm) var(--spacing-md);
-		background: transparent;
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-md);
-		color: var(--color-text-secondary);
-		font-size: var(--font-size-sm);
-		font-weight: 600;
-		cursor: pointer;
-		transition: all var(--transition-fast);
-	}
-
-	.clear-all-btn:hover {
-		background: var(--color-danger);
-		border-color: var(--color-danger);
-		color: white;
-	}
 
 	.chord-selector__selected-chords {
 		display: flex;
@@ -1404,40 +1403,35 @@
 		cursor: grabbing;
 	}
 
-	.chord-selector__prompt {
-		color: var(--color-text-secondary);
-		font-size: var(--font-size-sm);
-		font-style: italic;
-	}
 
 	/* Selected Chords Section in Main Area */
 	.selected-chords-section {
 		margin-top: var(--spacing-xl);
-		padding: var(--spacing-lg);
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
-		animation: fadeIn var(--transition-base);
+		padding-top: var(--spacing-md);
+		border-top: 1px solid var(--color-border);
+		background: transparent;
+		border-radius: 0;
 	}
 
 	.selected-chords-title {
-		font-size: var(--font-size-lg);
+		font-size: var(--font-size-sm);
 		font-weight: 600;
-		color: var(--color-text-primary);
-		margin-bottom: var(--spacing-md);
-		text-align: center;
+		color: var(--color-text-secondary);
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		margin-bottom: var(--spacing-sm);
+		text-align: left;
 	}
 
 	.selected-chords-prompt {
 		margin-top: var(--spacing-xl);
-		padding: var(--spacing-xl);
 		text-align: center;
 		color: var(--color-text-secondary);
-		font-size: var(--font-size-base);
+		font-size: var(--font-size-sm);
 		font-style: italic;
-		background: var(--color-surface);
-		border: 1px dashed var(--color-border);
-		border-radius: var(--radius-lg);
+		background: transparent;
+		border: none;
+		padding: 0;
 	}
 
 	.drag-hint {
@@ -1725,6 +1719,16 @@
 		}
 	}
 
+		/* Home start screen refinements */
+		.app-main__content {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: var(--spacing-xl);
+			display: flex;
+			flex-direction: column;
+			gap: var(--spacing-xl);
+		}
+
 	@media (max-width: 768px) {
 		.app-nav__content {
 			padding: var(--spacing-md);
@@ -1766,12 +1770,17 @@
 		/* Drawer mobile styles */
 		.drawer-content {
 			padding: 0 var(--spacing-md) var(--spacing-md);
+			padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
 		}
 
 		.drawer-title {
 			font-size: var(--font-size-lg);
 			margin-bottom: var(--spacing-md);
 			text-align: center;
+		}
+
+		.settings-tab-summary {
+			display: none;
 		}
 
 		.drawer-settings-grid {
@@ -1817,6 +1826,7 @@
 		/* Compact footer for mobile */
 		.app-footer__content {
 			padding: var(--spacing-lg) var(--spacing-md);
+			padding-bottom: calc(var(--spacing-lg) + env(safe-area-inset-bottom));
 		}
 
 		.selected-chords-section {
@@ -1852,10 +1862,6 @@
 			display: none;
 		}
 
-		.clear-all-btn {
-			padding: var(--spacing-xs) var(--spacing-sm);
-			font-size: var(--font-size-xs);
-		}
 
 		.selected-chord-pill {
 			padding: var(--spacing-xs) var(--spacing-sm);
@@ -1909,15 +1915,6 @@
 			gap: var(--spacing-md);
 		}
 
-		/* Reduce button group spacing */
-		.button-group {
-			gap: var(--spacing-xs);
-		}
-
-		.option-btn {
-			padding: var(--spacing-sm) var(--spacing-md);
-			font-size: var(--font-size-sm);
-		}
 	}
 </style>
 

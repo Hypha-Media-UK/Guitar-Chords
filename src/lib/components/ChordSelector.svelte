@@ -171,23 +171,24 @@
 	.chord-btn {
 		flex: 1;
 		padding: var(--spacing-md) var(--spacing-lg);
-		background: var(--color-surface);
+		background: rgba(255, 255, 255, 0.03);
 		border: 1px solid var(--color-border);
-		border-radius: var(--radius-md);
+		border-radius: var(--radius-lg);
 		color: var(--color-text-primary);
 		font-size: var(--font-size-base);
 		font-weight: 500;
 		cursor: pointer;
 		transition: all var(--transition-fast);
+		text-align: left;
 	}
 
 	.chord-btn:hover {
-		background: var(--color-surface-elevated);
-		border-color: var(--color-primary);
+		background: rgba(255, 255, 255, 0.08);
+		border-color: rgba(255, 255, 255, 0.18);
 	}
 
 	.chord-btn.selected {
-		background: rgba(0, 122, 255, 0.1);
+		background: rgba(var(--color-primary-rgb), 0.14);
 		border-color: var(--color-primary);
 		color: var(--color-primary);
 	}

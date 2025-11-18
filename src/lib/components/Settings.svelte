@@ -350,8 +350,8 @@
 	}
 
 	.custom-color-picker {
-		background: rgba(255, 255, 255, 0.05);
-		border: 2px solid var(--color-border);
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid var(--color-border);
 		border-radius: var(--radius-lg);
 		padding: var(--spacing-lg);
 		display: flex;
@@ -378,9 +378,9 @@
 	}
 
 	.color-input {
-		width: 80px;
-		height: 80px;
-		border: 3px solid var(--color-border);
+		width: 72px;
+		height: 72px;
+		border: 2px solid var(--color-border);
 		border-radius: var(--radius-lg);
 		cursor: pointer;
 		background: transparent;
@@ -389,7 +389,7 @@
 
 	.color-input:hover {
 		border-color: var(--color-primary);
-		transform: scale(1.05);
+		transform: scale(1.03);
 	}
 
 	.color-input::-webkit-color-swatch-wrapper {
@@ -408,11 +408,11 @@
 
 	.color-value {
 		font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
-		font-size: var(--font-size-lg);
+		font-size: var(--font-size-base);
 		font-weight: 600;
 		color: var(--color-text);
 		background: rgba(255, 255, 255, 0.05);
-		padding: var(--spacing-sm) var(--spacing-md);
+		padding: var(--spacing-xs) var(--spacing-md);
 		border-radius: var(--radius-md);
 		border: 1px solid var(--color-border);
 	}
@@ -510,20 +510,20 @@
 		align-items: center;
 		gap: var(--spacing-xs);
 		padding: var(--spacing-sm);
-		background: rgba(255, 255, 255, 0.05);
-		border: 2px solid transparent;
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid transparent;
 		border-radius: var(--radius-lg);
 		cursor: pointer;
 		transition: all var(--transition-fast);
 	}
 
 	.chord-item:hover {
-		background: rgba(255, 255, 255, 0.1);
-		border-color: rgba(255, 255, 255, 0.2);
+		background: rgba(255, 255, 255, 0.08);
+		border-color: rgba(255, 255, 255, 0.18);
 	}
 
 	.chord-item.selected {
-		background: rgba(0, 122, 255, 0.2);
+		background: rgba(var(--color-primary-rgb), 0.14);
 		border-color: var(--color-primary);
 	}
 
@@ -583,7 +583,6 @@
 			grid-template-columns: repeat(5, 1fr);
 		}
 	}
-
 	/* Large Desktop - 6 columns max */
 	@media (min-width: 1400px) {
 		.chord-grid {

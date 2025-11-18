@@ -100,19 +100,13 @@
 			</div>
 
 			<!-- Current Chord -->
-			<section class="current-chord" class:changing-soon={isChangingSoon}>
+			<section class="current-chord">
 				<h2 class="chord-name-large">{currentChord?.name}</h2>
 				<ChordDiagram diagram={currentChord?.diagram} class="chord-diagram-large" />
 				<div class="next-mobile">
 					<p class="next-label">Next:</p>
 					<h3 class="next-name">{nextChord?.name}</h3>
 				</div>
-				{#if isChangingSoon}
-					<div class="change-warning">
-						<span class="warning-icon">⚠️</span>
-						<span class="warning-text">Next: <strong>{nextChord?.name}</strong></span>
-					</div>
-				{/if}
 			</section>
 
 			<!-- Next Chord (Desktop) -->
@@ -138,7 +132,7 @@
 			<!-- Beats Remaining Counter -->
 			<div class="beats-remaining">
 				<span class="beats-count" class:warning={isChangingSoon}>{beatsRemaining}</span>
-				<span class="beats-label">until next</span>
+				<span class="beats-label">beats until next chord</span>
 			</div>
 
 			<!-- Controls -->
@@ -341,75 +335,7 @@
 		padding-top: var(--spacing-xl);
 	}
 
-	.current-chord.changing-soon {
-		animation: pulse 0.5s ease-in-out infinite;
-	}
 
-	@keyframes pulse {
-		0%, 100% {
-			transform: scale(1);
-		}
-		50% {
-			transform: scale(1.02);
-		}
-	}
-
-	.change-warning {
-		position: absolute;
-		top: 0;
-		left: 50%;
-		transform: translateX(-50%);
-		display: flex;
-		align-items: center;
-		gap: var(--spacing-sm);
-		padding: var(--spacing-sm) var(--spacing-lg);
-		background: linear-gradient(135deg, rgba(255, 149, 0, 0.95) 0%, rgba(255, 100, 0, 0.95) 100%);
-		border: 2px solid rgba(255, 200, 0, 0.8);
-		border-radius: var(--radius-full);
-		font-size: var(--font-size-base);
-		font-weight: 600;
-		color: white;
-		box-shadow: 0 4px 20px rgba(255, 149, 0, 0.4), 0 0 0 4px rgba(255, 149, 0, 0.1);
-		animation: slideDown 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-		z-index: 10;
-		white-space: nowrap;
-	}
-
-	@keyframes slideDown {
-		0% {
-			opacity: 0;
-			transform: translateX(-50%) translateY(-20px) scale(0.8);
-		}
-		100% {
-			opacity: 1;
-			transform: translateX(-50%) translateY(0) scale(1);
-		}
-	}
-
-	.warning-icon {
-		font-size: var(--font-size-lg);
-		animation: bounce 0.5s ease-in-out infinite;
-		filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-	}
-
-	@keyframes bounce {
-		0%, 100% {
-			transform: translateY(0);
-		}
-		50% {
-			transform: translateY(-4px);
-		}
-	}
-
-	.warning-text {
-		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-	}
-
-	.warning-text strong {
-		font-weight: 800;
-		font-size: 1.1em;
-		letter-spacing: 0.5px;
-	}
 
 	.chord-name-large {
 		font-size: var(--font-size-4xl);
@@ -468,14 +394,14 @@
 	.beat.active {
 		background: var(--color-primary);
 		border-color: var(--color-primary);
-		transform: scale(1.3);
-		box-shadow: 0 0 12px rgba(0, 122, 255, 0.6);
+		transform: scale(1.15);
+		box-shadow: 0 0 6px rgba(0, 122, 255, 0.4);
 	}
 
 	.beat.accent.active {
 		background: var(--color-success);
 		border-color: var(--color-success);
-		box-shadow: 0 0 12px rgba(48, 209, 88, 0.6);
+		box-shadow: 0 0 6px rgba(48, 209, 88, 0.4);
 	}
 
 	.beats-remaining {
@@ -611,10 +537,6 @@
 	}
 
 	@media (max-width: 768px) {
-		.practice-header {
-			padding: var(--spacing-md);
-		}
-
 		.practice-view {
 			grid-template-columns: 1fr;
 			gap: var(--spacing-md);
@@ -634,15 +556,6 @@
 			font-size: var(--font-size-3xl);
 		}
 
-		.practice-controls {
-			padding: var(--spacing-md);
-			gap: var(--spacing-sm);
-		}
-
-		.control-btn {
-			padding: var(--spacing-md);
-		}
-
 		.control-btn svg {
 			width: 20px;
 			height: 20px;
@@ -655,19 +568,6 @@
 
 		.modal h3 {
 			font-size: var(--font-size-lg);
-		}
-
-		.shortcut-item {
-			padding: var(--spacing-sm);
-		}
-
-		.shortcut-key {
-			padding: var(--spacing-xs) var(--spacing-sm);
-			font-size: var(--font-size-xs);
-		}
-
-		.shortcut-description {
-			font-size: var(--font-size-sm);
 		}
 	}
 </style>
