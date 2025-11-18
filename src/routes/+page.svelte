@@ -645,23 +645,6 @@
 												ondrop={(e) => handleDrop(e, index)}
 								role="listitem"
 											>
-												<!-- Delete button with trash can icon -->
-												<button
-													onclick={() => handleChordRemove(chord)}
-													class="delete-chord-btn"
-													aria-label="Remove {chord.name}"
-												>
-													<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-														<path
-															d="M2 4h12M5.333 4V2.667a1.333 1.333 0 011.334-1.334h2.666a1.333 1.333 0 011.334 1.334V4m2 0v9.333a1.333 1.333 0 01-1.334 1.334H4.667a1.333 1.333 0 01-1.334-1.334V4h9.334z"
-															stroke="currentColor"
-															stroke-width="1.5"
-															stroke-linecap="round"
-															stroke-linejoin="round"
-														/>
-													</svg>
-												</button>
-
 												<!-- Chord name pill (draggable area) -->
 												<div
 													class="selected-chord-pill"
@@ -685,6 +668,23 @@
 														</svg>
 													</div>
 												</div>
+
+												<!-- Delete button with trash can icon -->
+												<button
+													onclick={() => handleChordRemove(chord)}
+													class="delete-chord-btn"
+													aria-label="Remove {chord.name}"
+												>
+													<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+														<path
+															d="M2 4h12M5.333 4V2.667a1.333 1.333 0 011.334-1.334h2.666a1.333 1.333 0 011.334 1.334V4m2 0v9.333a1.333 1.333 0 01-1.334 1.334H4.667a1.333 1.333 0 01-1.334-1.334V4h9.334z"
+															stroke="currentColor"
+															stroke-width="1.5"
+															stroke-linecap="round"
+															stroke-linejoin="round"
+														/>
+													</svg>
+												</button>
 											</div>
 										{/each}
 									</div>
@@ -1043,27 +1043,28 @@
 	.settings-tab {
 		position: fixed;
 		left: 50%;
-		bottom: calc(var(--footer-height, 0px) + env(safe-area-inset-bottom) + var(--spacing-sm));
+		bottom: calc(var(--footer-height, 0px) + env(safe-area-inset-bottom) + var(--spacing-md));
 		transform: translateX(-50%);
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		gap: var(--spacing-xs);
-		height: 36px;
-		padding: 0 var(--spacing-lg);
-		background: var(--color-surface-elevated);
-		border: 1px solid var(--color-border);
-		border-radius: 999px;
+		gap: var(--spacing-sm);
+		height: 32px;
+		padding: 0 var(--spacing-md);
+		background: rgba(255, 255, 255, 0.08);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		border-radius: 3px;
 		color: var(--color-text-secondary);
 		cursor: pointer;
 		transition: all var(--transition-fast);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 		z-index: 101;
 		font-size: var(--font-size-xs);
 	}
 
 	.settings-tab.open {
-		background: var(--color-surface);
+		background: rgba(255, 255, 255, 0.12);
+		border-color: rgba(255, 255, 255, 0.18);
 		color: var(--color-text-primary);
 	}
 
@@ -1081,7 +1082,8 @@
 	}
 
 	.settings-tab:hover {
-		background: var(--color-surface);
+		background: rgba(255, 255, 255, 0.12);
+		border-color: rgba(255, 255, 255, 0.18);
 		color: var(--color-text-primary);
 	}
 
@@ -1294,10 +1296,10 @@
 
 
 	.chord-selector__selected-chords {
-		display: flex;
-		flex-wrap: wrap;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
 		gap: var(--spacing-sm);
-		align-items: center;
+		width: 100%;
 	}
 
 	.selected-chord-wrapper {
@@ -1308,8 +1310,7 @@
 		transition: all var(--transition-fast);
 		position: relative;
 		padding: 2px;
-		flex: 1 1 260px;
-		max-width: 100%;
+		width: 100%;
 	}
 
 	.selected-chord-wrapper.dragging {
@@ -1339,12 +1340,12 @@
 		right: -6px;
 	}
 
-	/* Delete button (trash can icon on the left) */
+	/* Delete button (trash can icon on the right) */
 	.delete-chord-btn {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: var(--spacing-sm);
+		padding: var(--spacing-xs);
 		background: transparent;
 		border: none;
 		color: var(--color-text-secondary);
@@ -1363,18 +1364,21 @@
 	.selected-chord-pill {
 		display: flex;
 		align-items: center;
-		gap: var(--spacing-sm);
-		padding: var(--spacing-md) var(--spacing-xl);
+		justify-content: center;
+		gap: var(--spacing-xs);
+		padding: var(--spacing-sm) var(--spacing-md);
 		background: var(--color-primary);
 		border: 1px solid var(--color-primary);
-		border-radius: var(--radius-lg);
+		border-radius: 3px;
 		color: var(--color-primary-contrast);
-		font-size: var(--font-size-base);
+		font-size: var(--font-size-sm);
 		font-weight: 600;
 		cursor: grab;
 		transition: all var(--transition-fast);
 		user-select: none;
 		box-shadow: 0 4px 12px rgba(0, 122, 255, 0.35);
+		flex: 1;
+		min-height: 40px;
 	}
 
 	.selected-chord-pill:hover {
@@ -1396,11 +1400,15 @@
 		align-items: center;
 		justify-content: center;
 		color: var(--color-primary-contrast);
-		opacity: 0.9;
+		opacity: 0.7;
 		transition: opacity var(--transition-fast);
-		padding: 0 var(--spacing-xs);
 		cursor: grab;
 		flex-shrink: 0;
+	}
+
+	.drag-handle svg {
+		width: 10px;
+		height: 14px;
 	}
 
 	.selected-chord-pill:hover .drag-handle {
@@ -1854,9 +1862,7 @@
 			font-size: var(--font-size-base);
 		}
 
-		.chord-selector__selected-chords {
-			justify-content: center;
-		}
+
 
 		.selected-chords-prompt {
 			margin-top: var(--spacing-md);

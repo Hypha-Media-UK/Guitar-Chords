@@ -169,6 +169,7 @@
 		display: flex;
 		align-items: stretch;
 		gap: var(--spacing-xs);
+		width: 100%;
 	}
 
 	.chord-btn {
@@ -180,7 +181,7 @@
 		padding: var(--spacing-md);
 		background: transparent;
 		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
+		border-radius: 3px;
 		color: var(--color-text-primary);
 		font-size: var(--font-size-xl);
 		font-weight: 600;
@@ -240,7 +241,7 @@
 		padding: var(--spacing-md) var(--spacing-lg);
 		background: rgba(255, 255, 255, 0.03);
 		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
+		border-radius: 3px;
 		color: var(--color-text-secondary);
 		font-size: var(--font-size-sm);
 		font-weight: 500;
@@ -248,7 +249,7 @@
 		transition: all var(--transition-fast);
 		display: flex;
 		align-items: center;
-		justify-content: flex-start;
+		justify-content: center;
 		gap: var(--spacing-sm);
 	}
 
